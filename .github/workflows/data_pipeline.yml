@@ -13,6 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -34,14 +42,3 @@ jobs:
       - name: Fetch stock data
         run: |
           python src/main.py  # Runs your yfinance script
-
-      - name: Upload to S3 with versioning
-        run: |
-          # Upload latest data
-          aws s3 cp AAPL_latest_*.csv s3://${{ secrets.AWS_S3_BUCKET }}/latest/
-
-          # Archive old data (timestamped)
-          aws s3 cp AAPL_latest_*.csv s3://${{ secrets.AWS_S3_BUCKET }}/historical/$(date +%Y%m%d)/
-
-          # Optional: Clean up local files
-          rm *.csv

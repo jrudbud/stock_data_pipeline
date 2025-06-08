@@ -89,8 +89,8 @@ if __name__ == "__main__":
     # Configuration
     TICKER = "AAPL"
     TZ = pytz.timezone("Australia/Sydney")
-    START_DATE = TZ.localize(datetime(2023,1,1))
-    END_DATE = TZ.localize(datetime(2023,12,31))
+    START_DATE = TZ.localize(datetime(2024,1,1))
+    END_DATE = TZ.localize(datetime(2024,12,31))
     BUCKET_NAME = os.getenv('AWS_S3_BUCKET', 'jrud-stock-data')
     
     # Fetch data
