@@ -15,7 +15,7 @@ def fetch_stock_data(ticker: str, start_date: datetime, end_date: datetime) -> p
     """Fetch stock data from yfinance with error handling."""
     try:
         logger.info(f"Fetching data for {ticker} from {start_date} to {end_date}")
-        data = yf.download(ticker, start=start_date, end=end_date, progress=False)
+        data = yf.download(ticker, start=start_date, end=end_date, auto_adjust = False, progress=False)
         if data is None or data.empty:
             logger.warning(f"No data returned for {ticker}")
             return pd.DataFrame()
@@ -51,7 +51,7 @@ def upload_to_s3(file_path: str, bucket: str, s3_folder: str = "latest") -> bool
             "s3",
             aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
             aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            region_name=os.getenv('AWS_REGION', 'us-east-1')
+            region_name=os.getenv('AWS_REGION', 'ap-southeast-2') # Default to Sydney region
         )
         
         # Extract filename without path
