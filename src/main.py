@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from datetime import datetime
+import pytz
 import os
 import boto3
 import logging
@@ -10,7 +11,7 @@ from botocore.exceptions import NoCredentialsError, ClientError
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def fetch_stock_data(ticker: str, start_date: str, end_date: str) -> pd.DataFrame:
+def fetch_stock_data(ticker: str, start_date: datetime, end_date: datetime) -> pd.DataFrame:
     """Fetch stock data from yfinance with error handling."""
     try:
         logger.info(f"Fetching data for {ticker} from {start_date} to {end_date}")
@@ -87,9 +88,10 @@ def upload_to_s3(file_path: str, bucket: str, s3_folder: str = "latest") -> bool
 if __name__ == "__main__":
     # Configuration
     TICKER = "AAPL"
-    START_DATE = "2023-01-01"
-    END_DATE = "2023-12-31"
-    BUCKET_NAME = os.getenv('AWS_S3_BUCKET', 'your-bucket-name')
+    TZ = pytz.timezone("Australia/Sydney")
+    START_DATE = TZ.localize(datetime(2023,1,1))
+    END_DATE = TZ.localize(datetime(2023,12,31))
+    BUCKET_NAME = os.getenv('AWS_S3_BUCKET', 'jrud-stock-data')
     
     # Fetch data
     stock_data = fetch_stock_data(TICKER, START_DATE, END_DATE)
